@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.1] (2016-08-17)
+
+**Implemented enhancements:**
+
+- Add kmz and kml import
+- Posibility to join multiple input files to index.json
+
+Win32 version
+- New icon
+
+
 ## [1.2] (2016-08-09)
 
 **Implemented enhancements:**
