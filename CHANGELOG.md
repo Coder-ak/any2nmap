@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.2] (2016-08-17)
+**Fixed bugs:**
+
+- search Placemarks with lxml instead direct access
+
 ## [2.1] (2016-08-17)
 
 **Implemented enhancements:**
