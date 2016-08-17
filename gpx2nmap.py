@@ -59,6 +59,7 @@ def gpx_parse(input_file, output_folder):
 		if bool(waypoints.extensions):
 			# Windows version want aq:picture key
 			if "aq:picture" in waypoints.extensions:
+				# Need check if output_folder is root /
 				point['photo'] = '/'+output_folder+'/'+os.path.basename(waypoints.extensions["aq:picture"])
 			elif "picture" in waypoints.extensions:
 				point['photo'] = '/'+output_folder+'/'+os.path.basename(waypoints.extensions["picture"])
