@@ -17,6 +17,7 @@ if __name__ == '__main__':
 	parser.add_argument('-p', '--print', dest='print_data', action='store_true', help='Print output to stdout')
 	args = parser.parse_args()
 
+# Get output folder name. If none, use current folder
 def check_folder(input_file, output_folder):
 	if not output_folder:
 		return os.path.basename(os.path.dirname(os.path.abspath(input_file)))
@@ -25,11 +26,9 @@ def check_folder(input_file, output_folder):
 
 def gpx_parse(input_file, output_folder):
 	gpx_file = open(input_file, 'r')
-
 	gpx = gpxpy.parse(gpx_file)
 
 	output_folder = check_folder(input_file, output_folder)
-
 	points = {}
 	paths = {}
 	for track in gpx.tracks:
@@ -38,7 +37,7 @@ def gpx_parse(input_file, output_folder):
 			for point in segment.points:
 				trk_coord.append([point.longitude, point.latitude])
 		paths[str(uuid.uuid4())] = trk_coord
-		#add middle point of path to gpx.waypoints
+		# Add middle point of path to gpx.waypoints
 		if track.name:
 			trk_middle = trk_coord[((len(trk_coord)-1)//2)]
 			gpx.waypoints.append(gpxpy.gpx.GPXWaypoint(trk_middle[1], trk_middle[0], name='\n'.join(filter(None, (track.name, track.comment, track.description)))))
@@ -48,6 +47,7 @@ def gpx_parse(input_file, output_folder):
 		for point in route.points:
 			path_coord.append([point.longitude, point.latitude])
 		paths[str(uuid.uuid4())] = path_coord
+		# Add middle point of path to gpx.waypoints
 		if route.name:
 			path_middle = path_coord[((len(path_coord)-1)//2)]
 			gpx.waypoints.append(gpxpy.gpx.GPXWaypoint(path_middle[1], path_middle[0], name='\n'.join(filter(None, (route.name, route.comment, route.description)))))
@@ -57,6 +57,7 @@ def gpx_parse(input_file, output_folder):
 		point = {'coords': [waypoints.longitude, waypoints.latitude]}
 		point['desc'] = '\n'.join(filter(None, (waypoints.name, waypoints.comment, waypoints.description)))
 		if bool(waypoints.extensions):
+			# Windows version want aq:picture key
 			if "aq:picture" in waypoints.extensions:
 				point['photo'] = '/'+output_folder+'/'+os.path.basename(waypoints.extensions["aq:picture"])
 			elif "picture" in waypoints.extensions:
@@ -69,20 +70,24 @@ def gpx_parse(input_file, output_folder):
 
 	index_json(out)
 
+# KML parser use root object opened by kml_parse function
 def kml_parser(root, input_file, output_folder):
-	
-	output_folder = check_folder(output_folder)
-
+	from pykml.factory import nsmap
+	namespace = {"ns": nsmap[None]}
+	output_folder = check_folder(input_file, output_folder)
 	points = {}
 	paths = {}
-	for pm in root.Document.Placemark:
+	# Find all Placemarks in root
+	for pm in root.findall(".//ns:Placemark", namespaces=namespace):
 		if hasattr(pm, 'Point'):
 			point = {'coords': [float(x) for x in str(pm.Point.coordinates).split()[0].split(',')[:2]]}
 			desc = []
 			if hasattr(pm, 'name'):
 				desc.append(str(pm.name))
 			if hasattr(pm, 'description'):
+				# Strip all html tags from point.description
 				desc.append(re.sub('<.*?>','',str(pm.description)))
+				# Get image name from point.description
 				photos = re.findall('<img.*?src="(?!http[s]?://)(.*?)"', str(pm.description))
 				if photos:
 					point['photo'] = '/'+output_folder+'/'+os.path.basename(photos.pop(0))
