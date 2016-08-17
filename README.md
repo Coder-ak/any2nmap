@@ -1,12 +1,16 @@
 # gpx2nmap
 
-Конвертер GPX файлов в формат json для Блокнота народного картографа Народных Карт.
+Конвертер GPX, KML и KMZ форматов в формат json для Блокнота народного картографа Народных Карт.
 
-![alt tag](https://github.com/Coder-ak/gpx2nmap/blob/master/gpx2nmapgui.png?raw=true)
+![alt tag](https://github.com/Coder-ak/gpx2nmap/blob/master/gpx2nmapgui-screen.png?raw=true)
 
-Выберите исходный GPX файл, выберите директорию, куда будет сохранён результат, нажмите RUN.
+Выберите исходный файл, выберите директорию, куда будет сохранён результат, нажмите RUN.
 
-Например, выберите папку Яндекс.Диска, где сохраняются данные Блокнота Картографа (/Приложения/Блокнот картографа Народной карты/), создайте папку с текущей датой в этой папке, положите в неё фото из GPX файла и туда же будет сохранён созданный index.json.
+Например, выберите папку Яндекс.Диска, где сохраняются данные Блокнота Картографа (Яндекс.Диск/Приложения/Блокнот картографа Народной карты/), создайте папку с произвольными именем (например, 2016-08-17), скопируйте в неё фото сделанные при создании точек. В эту папку будет сохранён созданный index.json.
+
+При обработке KMZ файлов, находящиеся внутри архива фотографии будут также распакованы в выходную папку. К пути файлов будет добавлена папка по названию KMZ файла из которого они были извлечены.
+
+Можно выбрать одновременно несколько файлов, все они будут обработаны и результат объединён в выходном файле index.json.
 
 Автор не несет ответственности за результаты работы программы, вы используете её на свой страх и риск.
 
@@ -48,21 +52,24 @@
 
 Консольная версия утилиты gpx2nmap
 ```
-usage: gpx2nmap.py [-h] [-f FOLDER_NAME] input_file
+usage: gpx2nmap.py [-h] [-f FOLDER_NAME] [-t FILE_TYPE] [-p] input_file
 
 positional arguments:
   input_file            Input file name
 
 optional arguments:
   -h, --help            show this help message and exit
-  -f FOLDER_NAME, --folder_name FOLDER_NAME
+  -f FOLDER_NAME, --folder-name FOLDER_NAME
                         Folder name in Yandex.Disk
+  -t FILE_TYPE, --file-type FILE_TYPE
+                        Set file type to FILE_TYPE. Ex.: -t gpx
+  -p, --print           Print output to stdout
 ```
 input_file - исходный GPX файл, folder_name - название папки, которое будет добавлено к пути фотографии из GPX extensions. Если что-то пошло не так, напишите автору: alexcoder@gmail.com.
 
 Например, выберите папку Яндекс.Диска, где сохраняются данные Блокнота Картографа (/Приложения/Блокнот картографа Народной карты/), создайте папку с текущей датой, положите в неё фото из GPX файла и скопируйте туда созданный index.json.
 
-В работе утилиты используется модуль gpxpy: https://github.com/tkrajina/gpxpy и lxml.
+В работе утилиты используются сторонние модули gpxpy: https://github.com/tkrajina/gpxpy, pykml и lxml.
 ```
-pip install gpxpy lxml
+pip install gpxpy pykml lxml
 ```
