@@ -2,6 +2,15 @@
 
 ## [3.0] (2016-08-25)
 
+**Fixed bugs:**
+
+- create manually entered dir
+
+Win32 version
+- fixed encoding of index.json file on
+
+## [3.0] (2016-08-25)
+
 **Implemented enhancements:**
 
 - Add json, csv and jpg files import
