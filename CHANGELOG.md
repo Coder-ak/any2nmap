@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.0] (2016-08-25)
+
+**Implemented enhancements:**
+
+- Add json, csv and jpg files import
+
 ## [2.2] (2016-08-17)
 **Fixed bugs:**
 
