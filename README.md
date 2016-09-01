@@ -1,4 +1,4 @@
-# any2nmap json
+# Any2Nmap converter
 
 Конвертер GPX, KML, KMZ, JPG, JSON или CSV форматов в формат json для Блокнота народного картографа Народных Карт.
 
