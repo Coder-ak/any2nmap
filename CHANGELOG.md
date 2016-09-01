@@ -3,6 +3,7 @@
 ## [3.2] (2016-08-26)
 
 - add keyboard shortcuts
+- add global menu
 - add check update feature
 
 ## [3.1] (2016-08-25)
