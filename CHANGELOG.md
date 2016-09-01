@@ -1,5 +1,33 @@
 # Change Log
 
+## [3.4] (2016-09-01)
+
+- fix kml MultiGeometry
+
+## [3.3] (2016-09-01)
+
+- add global menu
+
+## [3.2] (2016-08-26)
+
+- add keyboard shortcuts
+- add check update feature
+
+## [3.1] (2016-08-25)
+
+**Fixed bugs:**
+
+- create manually entered dir
+
+Win32 version
+- fixed encoding of index.json file on
+
+## [3.0] (2016-08-25)
+
+**Implemented enhancements:**
+
+- Add json, csv and jpg files import
+
 ## [2.2] (2016-08-17)
 **Fixed bugs:**
 
