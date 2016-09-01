@@ -1,9 +1,16 @@
 # Change Log
 
+## [3.4] (2016-09-01)
+
+- fix kml MultiGeometry
+
+## [3.3] (2016-09-01)
+
+- add global menu
+
 ## [3.2] (2016-08-26)
 
 - add keyboard shortcuts
-- add global menu
 - add check update feature
 
 ## [3.1] (2016-08-25)
