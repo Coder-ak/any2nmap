@@ -8,6 +8,7 @@ import argparse
 import os
 import re
 import zipfile
+import csv
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
@@ -100,6 +101,15 @@ def kml_parser(root, input_file, output_folder = ''):
 				
 			point['desc'] = '\n'.join(filter(None, desc))
 			points[str(uuid.uuid4())] = point
+		elif hasattr(pm, 'MultiGeometry'):
+			for LineString in pm.MultiGeometry.findall(".//ns:LineString", namespaces=namespace):
+				path_point = []
+				for coord in str(LineString.coordinates).split():
+					path_point.append([float(x) for x in coord.split(',')[:2]])
+				if hasattr(pm, "name"):
+					points[str(uuid.uuid4())] = {'coords': middle_point(path_point), 'desc': str(pm.name)}
+				paths[str(uuid.uuid4())] = path_point
+
 		elif hasattr(pm, 'LineString'):
 			path_point = []
 			for coord in str(pm.LineString.coordinates).split():
@@ -134,6 +144,52 @@ def kmz_parse(input_file):
 		with kmz_file.open('doc.kml', 'r') as kml_file:
 			kml_parser(parser.parse(kml_file).getroot(), input_file, output_folder)
 
+def csv_parse(input_file):
+	with open(input_file, encoding='utf-8') as csv_file:
+		csv_sample = csv_file.read(1024)
+		sniffer = csv.Sniffer()
+		try:
+			header = sniffer.has_header(csv_sample)
+		except:
+			header = None
+		try:
+			dialect = sniffer.sniff(csv_sample)
+		except:
+			dialect = 'excel'
+			
+		csv_file.seek(0)
+
+		fieldnames = None
+
+		if not header:
+			csv_data = csv.reader(csv_file, dialect=dialect)
+			sample = next(csv_data)
+			csv_file.seek(0)
+
+			fieldnames = []
+			coords = ["Latitude", "Longitude"]
+			i = 0
+			for column in sample:
+				i += 1
+				if re.match("^-?\d+\.\d+$", column):
+					fieldnames.append(coords.pop(0))
+				else:
+					fieldnames.append(str(i))
+
+		if header or fieldnames:
+			csv_data = csv.DictReader(csv_file, fieldnames=fieldnames, dialect=dialect)
+
+		fields = ["Latitude", "Longitude"]
+		points = {}
+		for row in csv_data:
+			if all(field in row for field in fields):
+				points[str(uuid.uuid4())] = {'coords': [float(row.pop("Longitude")), float(row.pop("Latitude"))], 'desc': '\n'.join(['{}: {}'.format(k,v) for k,v in sorted(row.items())])}
+		
+		out = {}
+		out['paths'] = {}
+		out['points'] = points
+		
+		index_json(out)
 
 def index_json(data):
 	if args.print_data:
@@ -143,7 +199,7 @@ def index_json(data):
 		json.dump(data, index_file, ensure_ascii=False, separators=(',', ':'))
 		index_file.close
 
-switch={'gpx':gpx_parse, 'kml':kml_parse, 'kmz':kmz_parse}
+switch={'gpx':gpx_parse, 'kml':kml_parse, 'kmz':kmz_parse, 'csv':csv_parse}
 
 if args.file_type:
 	extension = args.file_type
