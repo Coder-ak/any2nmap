@@ -76,13 +76,68 @@ def gpx_parse(input_file):
 	index_json(out)
 
 # KML parser use root object opened by kml_parse function
-def kml_parser(root, input_file, output_folder = ''):
-	from pykml.factory import nsmap
-	namespace = {"ns": nsmap[None]}
+# def kml_parser(root, input_file, output_folder = ''):
+# 	from pykml.factory import nsmap
+# 	namespace = {"ns": nsmap[None], "gx":nsmap['gx']}
+# 	points = {}
+# 	paths = {}
+# 	# Find all Placemarks in root
+# 	for pm in root.findall(".//ns:Placemark", namespaces=namespace):
+# 		if hasattr(pm, 'Point'):
+# 			point = {'coords': [float(x) for x in str(pm.Point.coordinates).split()[0].split(',')[:2]]}
+# 			desc = []
+# 			if hasattr(pm, 'name'):
+# 				desc.append(str(pm.name))
+# 			if hasattr(pm, 'description'):
+# 				# Strip all html tags from point.description
+# 				desc.append(re.sub('<.*?>','',str(pm.description)))
+# 				# Get image name from point.description
+# 				photos = re.findall('<img.*?src="(?!http[s]?://)(.*?)"', str(pm.description))
+# 				if photos:
+# 					point['photo'] = output_folder + os.path.basename(photos.pop(0))
+# 					if len(photos)>0:
+# 						for photo in photos:
+# 							desc.append(photo)
+				
+# 			point['desc'] = '\n'.join(filter(None, desc))
+# 			points[str(uuid.uuid4())] = point
+# 		elif hasattr(pm, 'MultiGeometry'):
+# 			for LineString in pm.MultiGeometry.findall(".//ns:LineString", namespaces=namespace):
+# 				path_point = []
+# 				for coord in str(LineString.coordinates).split():
+# 					path_point.append([float(x) for x in coord.split(',')[:2]])
+# 				if hasattr(pm, "name"):
+# 					points[str(uuid.uuid4())] = {'coords': middle_point(path_point), 'desc': str(pm.name)}
+# 				paths[str(uuid.uuid4())] = path_point
+
+# 		elif hasattr(pm, 'gx:MultiTrack'):
+# 			print("Multi")
+
+# 		elif hasattr(pm, 'LineString'):
+# 			path_point = []
+# 			for coord in str(pm.LineString.coordinates).split():
+# 				path_point.append([float(x) for x in coord.split(',')[:2]])
+# 			if hasattr(pm, "name"):
+# 				points[str(uuid.uuid4())] = {'coords': middle_point(path_point), 'desc': str(pm.name)}
+# 			paths[str(uuid.uuid4())] = path_point
+
+# 	out = {}
+# 	out['paths'] = paths
+# 	out['points'] = points
+
+# 	index_json(out)
+
+
+def kml_parse(input_file, output_folder = ''):
+	import lxml.objectify as objectify
+	with open(input_file, 'rb') as xml:
+		kml = objectify.parse(xml).getroot()
+
+	namespace = {"ns": "http://www.opengis.net/kml/2.2", "gx":"http://www.google.com/kml/ext/2.2"}
 	points = {}
 	paths = {}
 	# Find all Placemarks in root
-	for pm in root.findall(".//ns:Placemark", namespaces=namespace):
+	for pm in kml.findall(".//ns:Placemark", namespaces=namespace):
 		if hasattr(pm, 'Point'):
 			point = {'coords': [float(x) for x in str(pm.Point.coordinates).split()[0].split(',')[:2]]}
 			desc = []
@@ -118,16 +173,43 @@ def kml_parser(root, input_file, output_folder = ''):
 				points[str(uuid.uuid4())] = {'coords': middle_point(path_point), 'desc': str(pm.name)}
 			paths[str(uuid.uuid4())] = path_point
 
+		elif hasattr(pm, "{http://www.google.com/kml/ext/2.2}MultiTrack") is not None:
+			MultiTrack = getattr(pm, "{http://www.google.com/kml/ext/2.2}MultiTrack", None)
+			for mt in MultiTrack:
+				for tr in getattr(mt, "{http://www.google.com/kml/ext/2.2}Track", None):
+					for co in getattr(tr, "{http://www.google.com/kml/ext/2.2}coord", None):
+						path_point = []
+						for coord in co:
+							path_point.append([float(x) for x in str(coord).split()[:2]])
+						paths[str(uuid.uuid4())] = path_point
+					if hasattr(pm, "name"):
+						points[str(uuid.uuid4())] = {'coords': middle_point(path_point), 'desc': str(pm.name)}
+
+
+	# MultiTrack = kml.findall(".//ns:Placemark/gx:MultiTrack", namespaces=namespace)
+	# if MultiTrack is not None:
+	# 	for mt in MultiTrack:
+	# 		for tr in mt.Track:
+	# 			for co in tr.coord:
+	# 				path_point = []
+	# 				for coord in str(co).split():
+	# 					path_point.append([float(x) for x in coord.split(',')[:2]])
+	# 				paths[str(uuid.uuid4())] = path_point
+
 	out = {}
 	out['paths'] = paths
 	out['points'] = points
 
 	index_json(out)
 
-def kml_parse(input_file):
-	from pykml import parser
-	with open(input_file, 'r') as xml:
-		kml_parser(parser.parse(xml).getroot(), input_file)
+# def kml_parse(input_file):
+# 	# from pykml import parser
+# 	# from lxml import etree
+# 	import lxml.objectify as objectify
+# 	with open(input_file, 'rb') as xml:
+# 		# kml_parser(parser.parse(xml).getroot(), input_file)
+# 		# newkml_parser(xmltodict.parse(xml), input_file)
+# 		lxmlkml_parser(objectify.parse(xml).getroot(), input_file)
 
 def kmz_parse(input_file):
 	from pykml import parser
@@ -141,8 +223,8 @@ def kmz_parse(input_file):
 				images_output_folder = 'files/'
 		if images_output_folder:
 			output_folder = filename + '/' + images_output_folder
-		with kmz_file.open('doc.kml', 'r') as kml_file:
-			kml_parser(parser.parse(kml_file).getroot(), input_file, output_folder)
+		# with kmz_file.open('doc.kml', 'r') as kml_file:
+		kml_parse('doc.kml', output_folder)
 
 def csv_parse(input_file):
 	with open(input_file, encoding='utf-8') as csv_file:

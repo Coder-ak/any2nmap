@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.5] (2016-09-03)
+
+- fix kml gx namespace parsing
+
 ## [3.4] (2016-09-01)
 
 - fix kml MultiGeometry
