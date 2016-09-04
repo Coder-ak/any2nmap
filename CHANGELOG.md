@@ -1,4 +1,8 @@
 # Change Log
+## [3.7] (2016-09-03)
+
+- add logging
+
 ## [3.6] (2016-09-03)
 
 - fix kml parsing
