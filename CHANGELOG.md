@@ -1,9 +1,9 @@
 # Change Log
-## [3.7] (2016-09-03)
+## [3.7]
 
 - add logging
 
-## [3.6] (2016-09-03)
+## [3.6]
 
 - fix kml parsing
 - add russan and ukrainian translations
