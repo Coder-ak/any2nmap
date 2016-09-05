@@ -1,4 +1,8 @@
 # Change Log
+## v3.8 (2016-09-05)
+
+- fix kmz encoding again
+
 ## v3.7 (2016-09-04)
 
 - add logging
