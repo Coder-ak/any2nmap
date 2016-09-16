@@ -1,5 +1,5 @@
 # Change Log
-## v3.8.1 (2016-09-16)
+## v3.9 (2016-09-16)
 
 - change update url
 
