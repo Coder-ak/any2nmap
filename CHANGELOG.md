@@ -1,4 +1,8 @@
 # Change Log
+## v3.8.1 (2016-09-16)
+
+- change update url
+
 ## v3.8 (2016-09-05)
 
 - fix kmz encoding again
