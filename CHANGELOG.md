@@ -1,4 +1,26 @@
 # Change Log
+## v3.9.3 (2016-10-24)
+
+- fix output path
+- fix empty paths in GPX
+
+## v3.9 (2016-09-16)
+
+- change update url
+
+## v3.8 (2016-09-05)
+
+- fix kmz encoding again
+
+## v3.7 (2016-09-04)
+
+- add logging
+
+## v3.6 (2016-09-04)
+
+- fix kml parsing
+- add russan and ukrainian translations
+- bug fixes
 
 ## [3.5] (2016-09-03)
 
