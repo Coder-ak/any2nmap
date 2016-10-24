@@ -40,21 +40,23 @@ def gpx_parse(input_file):
 		for segment in track.segments:
 			for point in segment.points:
 				trk_coord.append([point.longitude, point.latitude])
-		paths[str(uuid.uuid4())] = trk_coord
-		# Add middle point of path to gpx.waypoints
-		if track.name:
-			trk_middle = middle_point(trk_coord)
-			gpx.waypoints.append(gpxpy.gpx.GPXWaypoint(trk_middle[1], trk_middle[0], name='\n'.join(filter(None, (track.name, track.comment, track.description)))))
+		if trk_coord:
+			paths[str(uuid.uuid4())] = trk_coord
+			# Add middle point of path to gpx.waypoints
+			if track.name:
+				trk_middle = middle_point(trk_coord)
+				gpx.waypoints.append(gpxpy.gpx.GPXWaypoint(trk_middle[1], trk_middle[0], name='\n'.join(filter(None, (track.name, track.comment, track.description)))))
 
 	for route in gpx.routes:
 		path_coord = []
 		for point in route.points:
 			path_coord.append([point.longitude, point.latitude])
-		paths[str(uuid.uuid4())] = path_coord
-		# Add middle point of path to gpx.waypoints
-		if route.name:
-			path_middle = middle_point(path_coord)
-			gpx.waypoints.append(gpxpy.gpx.GPXWaypoint(path_middle[1], path_middle[0], name='\n'.join(filter(None, (route.name, route.comment, route.description)))))
+		if path_coord:
+			paths[str(uuid.uuid4())] = path_coord
+			# Add middle point of path to gpx.waypoints
+			if route.name:
+				path_middle = middle_point(path_coord)
+				gpx.waypoints.append(gpxpy.gpx.GPXWaypoint(path_middle[1], path_middle[0], name='\n'.join(filter(None, (route.name, route.comment, route.description)))))
 
 	for waypoints in gpx.waypoints:
 		uid = str(uuid.uuid4())
@@ -291,7 +293,7 @@ else:
 try:
 	switch[str(extension.lower())](args.input_file.name)
 except KeyError:
-	print("Error: unsupported file extension\nSupported extensions: .gpx, .kml. Try -t option\n")
+	print("Error: unsupported file extension\nSupported extensions: .gpx, .kml, .kmz, .csv. Try -t option\n")
 	parser.print_help()
 	raise
 except:
