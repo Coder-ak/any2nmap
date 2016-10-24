@@ -1,4 +1,9 @@
 # Change Log
+## v3.9.3 (2016-10-24)
+
+- fix output path
+- fix empty paths in GPX
+
 ## v3.9 (2016-09-16)
 
 - change update url
