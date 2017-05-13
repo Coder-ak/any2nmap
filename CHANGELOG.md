@@ -2,6 +2,7 @@
 ##v3.9.5 (2017-05-13)
 
 - fix MultiTrack
+- fix(?) weird cp1251 encoding bug
 
 ##v3.9.4 (2017-04-01)
 
