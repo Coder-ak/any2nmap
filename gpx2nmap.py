@@ -66,9 +66,9 @@ def gpx_parse(input_file):
 			# Windows version want aq:picture key
 			if "aq:picture" in waypoints.extensions:
 				# Need check if output_folder is root /
-				point['photo'] = os.path.basename(waypoints.extensions["aq:picture"])
+				point['photo'] = '/'+args.folder_name+'/' + os.path.basename(waypoints.extensions["aq:picture"])
 			elif "picture" in waypoints.extensions:
-				point['photo'] = os.path.basename(waypoints.extensions["picture"])
+				point['photo'] = '/'+args.folder_name+'/' + os.path.basename(waypoints.extensions["picture"])
 		points[uid] = point
 
 	out = {}
@@ -179,11 +179,10 @@ def kml_parse(input_file, output_folder = ''):
 			MultiTrack = getattr(pm, "{http://www.google.com/kml/ext/2.2}MultiTrack", None)
 			for mt in MultiTrack:
 				for tr in getattr(mt, "{http://www.google.com/kml/ext/2.2}Track", None):
+					path_point = []
 					for co in getattr(tr, "{http://www.google.com/kml/ext/2.2}coord", None):
-						path_point = []
-						for coord in co:
-							path_point.append([float(x) for x in str(coord).split()[:2]])
-						paths[str(uuid.uuid4())] = path_point
+						path_point.append([float(x) for x in str(co).split()[:2]])
+					paths[str(uuid.uuid4())] = path_point
 					if hasattr(pm, "name"):
 						points[str(uuid.uuid4())] = {'coords': middle_point(path_point), 'desc': str(pm.name)}
 

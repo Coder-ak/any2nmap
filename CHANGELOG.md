@@ -1,4 +1,9 @@
 # Change Log
+
+##v3.9.4 (2017-04-01)
+
+- fix photo path
+
 ## v3.9.3 (2016-10-24)
 
 - fix output path
