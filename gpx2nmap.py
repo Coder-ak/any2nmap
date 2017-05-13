@@ -132,7 +132,7 @@ def gpx_parse(input_file):
 
 def kml_parse(input_file, output_folder = ''):
 	import lxml.objectify as objectify
-	with open(input_file, 'rb') as xml:
+	with open(input_file, 'r', errors='ignore') as xml:
 		kml = objectify.parse(xml).getroot()
 
 	namespace = {"ns": "http://www.opengis.net/kml/2.2", "gx":"http://www.google.com/kml/ext/2.2"}
