@@ -1,4 +1,8 @@
 # Change Log
+##v3.9.7 (2017-05-23)
+
+- fix windows encoding in xml
+
 ##v3.9.5 (2017-05-13)
 
 - fix MultiTrack
