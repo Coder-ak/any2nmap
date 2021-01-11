@@ -10,11 +10,11 @@ import re
 import zipfile
 import csv
 
-version = "3.9.7"
+version = "3.9.8"
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('input_file', type=argparse.FileType('r', encoding='UTF-8'), help='input file name')
+	parser.add_argument('input_file', type=argparse.FileType('r'), help='input file name')
 	parser.add_argument('-f', '--folder-name', dest='folder_name', default='', help='folder name in Yandex.Disk')
 	parser.add_argument('-t', '--file-type', dest='file_type', help='set file type to FILE_TYPE. Ex.: -t gpx')
 	parser.add_argument('-p', dest='print_data', action='store_true', help='print output to stdout')
@@ -36,7 +36,7 @@ def middle_point(path):
 		return path[0]
 
 def gpx_parse(input_file):
-	gpx_file = open(input_file, errors='ignore')
+	gpx_file = open(input_file)
 	gpx = gpxpy.parse(gpx_file)
 
 	points = {}

@@ -1,4 +1,8 @@
 # Change Log
+##v3.9.8 (2020-01-11)
+
+- possible fix to run app in the latest Python 2.7.16 version
+
 ##v3.9.7 (2017-05-23)
 
 - fix windows encoding in xml
